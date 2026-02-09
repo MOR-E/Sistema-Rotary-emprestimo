@@ -1,0 +1,100 @@
+/* Home.css */
+
+.home-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Welcome Card */
+.welcome-card {
+  background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 32px;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(26, 35, 126, 0.3);
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.welcome-subtitle {
+  margin: 12px 0 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Quick Actions Section */
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 20px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.action-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid transparent;
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #1a237e;
+}
+
+.action-card.highlight {
+  background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+  border: 2px solid #ffc107;
+}
+
+.action-card.highlight:hover {
+  border-color: #ff9800;
+}
+
+.action-icon {
+  font-size: 2.5rem;
+}
+
+.action-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.action-description {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .welcome-card {
+    padding: 28px;
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
