@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Empréstimos – Empréstimo de Itens</title>
+    <style>
+      :root {
+        --yellow: #fcbb17;
+        --navy: #233067;
+        --white: #ffffff;
+        --gray: #f9f9f9;
+        --overlay: rgba(0, 0, 0, 0.4);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: sans-serif;
+        background: var(--white);
+        color: var(--navy);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background: var(--navy);
+        color: var(--white);
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header h1 {
+        font-size: 1.25rem;
+        color: var(--yellow);
+      }
+      .btn-add-loan {
+        background: var(--yellow);
+        color: var(--navy);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-add-loan:hover {
+        background: #e6ae14;
+      }
+
+      main {
+        flex: 1;
+        padding: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+      }
+      th,
+      td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background: var(--navy);
+        color: var(--white);
+        position: sticky;
+        top: 0;
+      }
+      tr:nth-child(even) {
+        background: var(--gray);
+      }
+
+      .expand-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--navy);
+        font-size: 1.2rem;
+        width: 28px;
+        height: 28px;
+        transition: color 0.2s;
+      }
+      .expand-btn:hover {
+        color: var(--yellow);
+      }
+
+      .action-btn {
+        width: 32px;
+        height: 32px;
+        margin-left: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        padding: 0;
+      }
+      .action-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .edit-btn {
+        background: var(--yellow);
+        color: var(--navy);
+      }
+      .edit-btn:hover {
+        background: var(--navy);
+        color: var(--yellow);
+      }
+      .toggle-btn.active {
+        background: var(--yellow);
+        color: var(--navy);
+      }
+      .toggle-btn.active:hover {
+        background: #e6ae14;
+      }
+      .toggle-btn.inactive {
+        background: var(--navy);
+        color: var(--white);
+      }
+      .toggle-btn.inactive:hover {
+        background: #1a2450;
+      }
+      .return-btn {
+        background: #2196f3;
+        color: var(--white);
+        border: none;
+        padding: 0.4rem 0.75rem;
+        margin-top: 0.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+      .return-btn:hover {
+        background: #1976d2;
+      }
+
+      .add-item-btn {
+        background: #4caf50;
+        color: var(--white);
+        border: none;
+        padding: 0.4rem 0.75rem;
+        margin-top: 0.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+      .add-item-btn:hover {
+        background: #45a049;
+      }
+
+      .subtable {
+        display: none;
+        background: #f4f4f4;
+      }
+      .subtable.show {
+        display: table-row;
+      }
+      .subtable td {
+        padding: 1rem;
+        border: none;
+      }
+
+      .detail {
+        background: var(--white);
+        border-radius: 6px;
+        padding: 1rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .detail-header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .detail-header div {
+        flex: 1 1 200px;
+      }
+
+      .item-section {
+        margin-bottom: 1rem;
+      }
+      .item-section strong {
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      .pat-list {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .pat-list th,
+      .pat-list td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .pat-list th {
+        background: #ddd;
+      }
+
+      footer {
+        background: var(--navy);
+        color: var(--white);
+        text-align: center;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      /* Modal comum */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--overlay);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--white);
+        border-radius: 8px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 80%;
+        overflow: auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .modal-header {
+        background: var(--navy);
+        color: var(--white);
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      .modal-header h2 {
+        font-size: 1rem;
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        color: var(--white);
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+      .modal-body {
+        padding: 1rem;
+      }
+      .modal-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .modal-table th,
+      .modal-table td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      .modal-table th {
+        background: var(--gray);
+      }
+
+      .select-btn,
+      .back-btn,
+      .devolver-tudo-btn,
+      .confirm-btn {
+        background: var(--yellow);
+        color: var(--navy);
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 0.9rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .select-btn:hover,
+      .back-btn:hover,
+      .devolver-tudo-btn:hover,
+      .confirm-btn:hover {
+        background: #e6ae14;
+      }
+      .back-btn {
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 1rem;
+        }
+        th,
+        td {
+          padding: 0.5rem;
+        }
+        .detail-header {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Empréstimos</h1>
+      <button class="btn-add-loan">+ Novo Empréstimo</button>
+    </header>
+
+    <main>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Data Empréstimo</th>
+              <th>Data Devolução</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Empréstimo Exemplo -->
+            <tr>
+              <td><button class="expand-btn">+</button></td>
+              <td>1</td>
+              <td>2025-07-01</td>
+              <td>Pendente</td>
+              <td>Ativo</td>
+              <td>
+                <button class="action-btn edit-btn" aria-label="Editar">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 20h16M14.5 4.5l5 5L9 20l-5-5 10.5-10.5z" />
+                  </svg>
+                </button>
+                <button
+                  class="action-btn toggle-btn active"
+                  aria-label="Inativar"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4" y1="4" x2="20" y2="20" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            <tr class="subtable">
+              <td colspan="6">
+                <div class="detail">
+                  <div class="detail-header">
+                    <div><strong>Requisitante:</strong> João Silva</div>
+                    <div><strong>Destinatário:</strong> Maria Souza</div>
+                  </div>
+                  <button class="add-item-btn">+ Adicionar Item</button>
+
+                  <div class="item-section" data-item-id="1">
+                    <strong>Item:</strong> Cadeira de Rodas
+                    <button class="return-btn">Devolver</button>
+                    <table class="pat-list">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Código</th>
+                          <th>Emprestado?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>101</td>
+                          <td>PATR-1001</td>
+                          <td>Sim</td>
+                        </tr>
+                        <tr>
+                          <td>102</td>
+                          <td>PATR-1002</td>
+                          <td>Sim</td>
+                        </tr>
+                        <tr>
+                          <td>103</td>
+                          <td>PATR-1003</td>
+                          <td>Não</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="item-section" data-item-id="2">
+                    <strong>Item:</strong> Andador
+                    <button class="return-btn">Devolver</button>
+                    <table class="pat-list">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Código</th>
+                          <th>Emprestado?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>201</td>
+                          <td>PATR-2001</td>
+                          <td>Não</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- Modal: Seleção de Item & Patrimônios -->
+    <div class="modal" id="modalItem">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Pesquisar Item</h2>
+          <button class="close-btn" data-close-item>&times;</button>
+        </div>
+        <div class="modal-body" id="itemListView">
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Total</th>
+                <th>Disponível</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Cadeira de Rodas</td>
+                <td>10</td>
+                <td>7</td>
+                <td>
+                  <button class="select-btn" data-select-item="1">
+                    Selecionar
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Andador</td>
+                <td>5</td>
+                <td>0</td>
+                <td>
+                  <button class="select-btn" data-select-item="2">
+                    Selecionar
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Muleta</td>
+                <td>8</td>
+                <td>4</td>
+                <td>
+                  <button class="select-btn" data-select-item="3">
+                    Selecionar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-body" id="patrimonyListView" style="display: none">
+          <button class="back-btn" data-back-item>&larr; Voltar</button>
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="patList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Devolução de Patrimônios -->
+    <div class="modal" id="modalReturn">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Devolver Patrimônio</h2>
+          <button class="close-btn" data-close-return>&times;</button>
+        </div>
+        <div class="modal-body">
+          <button class="devolver-tudo-btn">Devolver Tudo</button>
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Código</th>
+              </tr>
+            </thead>
+            <tbody id="returnList"></tbody>
+          </table>
+          <button class="confirm-btn">Confirmar Devolução</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2025 Sua Empresa</footer>
+
+    <script>
+      // exemplo de dados
+      const patrimonies = {
+        1: [
+          { id: 101, code: "PATR-1001", ret: false },
+          { id: 102, code: "PATR-1002", ret: false },
+          { id: 103, code: "PATR-1003", ret: false },
+        ],
+        2: [{ id: 201, code: "PATR-2001", ret: false }],
+        3: [
+          { id: 301, code: "PATR-3001", ret: false },
+          { id: 302, code: "PATR-3002", ret: false },
+        ],
+      };
+
+      // expandir empréstimo
+      document.querySelectorAll(".expand-btn").forEach((btn) => {
+        btn.onclick = () => {
+          const sub = btn.closest("tr").nextElementSibling;
+          const open = sub.classList.toggle("show");
+          btn.textContent = open ? "−" : "+";
+        };
+      });
+
+      // adicionar item
+      let currentDetail, currentItemId, currentItemName;
+
+      document.querySelectorAll(".add-item-btn").forEach((btn) => {
+        btn.onclick = () => {
+          currentDetail = btn.closest(".detail");
+          document.getElementById("modalItem").classList.add("show");
+          document.getElementById("itemListView").style.display = "";
+          document.getElementById("patrimonyListView").style.display = "none";
+        };
+      });
+
+      // fecha modalItem
+      document.querySelector("[data-close-item]").onclick = () => {
+        document.getElementById("modalItem").classList.remove("show");
+      };
+
+      // selecionar item
+      document.querySelectorAll("[data-select-item]").forEach((btn) => {
+        btn.onclick = () => {
+          currentItemId = btn.dataset.selectItem;
+          currentItemName = btn.closest("tr").children[1].textContent;
+          const list = document.getElementById("patList");
+          list.innerHTML = "";
+          patrimonies[currentItemId].forEach((p) => {
+            list.insertAdjacentHTML(
+              "beforeend",
+              `<tr>
+             <td><button class="select-btn" data-add-patr="${p.id}">Adicionar</button></td>
+             <td>${p.id}</td><td>${p.code}</td>
+           </tr>`
+            );
+          });
+          document.getElementById("itemListView").style.display = "none";
+          document.getElementById("patrimonyListView").style.display = "";
+        };
+      });
+
+      // voltar à lista de itens
+      document.querySelector("[data-back-item]").onclick = () => {
+        document.getElementById("itemListView").style.display = "";
+        document.getElementById("patrimonyListView").style.display = "none";
+      };
+
+      // adicionar patrimônio ao detalhe
+      document.getElementById("patList").onclick = (e) => {
+        if (!e.target.matches("[data-add-patr]")) return;
+        const patrId = e.target.dataset.addPatr;
+        const itemSec =
+          currentDetail.querySelector(
+            `.item-section[data-item-id="${currentItemId}"]`
+          ) || createItemSection();
+        const tbody = itemSec.querySelector("tbody");
+        const code = patrimonies[currentItemId].find(
+          (p) => p.id == patrId
+        ).code;
+        tbody.insertAdjacentHTML(
+          "beforeend",
+          `<tr><td>${patrId}</td><td>${code}</td><td>Sim</td></tr>`
+        );
+        document.getElementById("modalItem").classList.remove("show");
+      };
+
+      function createItemSection() {
+        const sec = document.createElement("div");
+        sec.className = "item-section";
+        sec.dataset.itemId = currentItemId;
+        sec.innerHTML = `
+      <strong>Item:</strong> ${currentItemName}
+      <button class="return-btn">Devolver</button>
+      <table class="pat-list">
+        <thead><tr><th>ID</th><th>Código</th><th>Emprestado?</th></tr></thead>
+        <tbody></tbody>
+      </table>`;
+        currentDetail.appendChild(sec);
+        attachReturnHandler(sec.querySelector(".return-btn"));
+        return sec;
+      }
+
+      // devolução
+      const modalReturn = document.getElementById("modalReturn"),
+        returnList = document.getElementById("returnList");
+
+      function attachReturnHandler(btn) {
+        btn.onclick = () => {
+          const itemSec = btn.closest(".item-section");
+          const id = itemSec.dataset.itemId;
+          returnList.innerHTML = "";
+          patrimonies[id].forEach((p) => {
+            if (!p.ret) {
+              returnList.insertAdjacentHTML(
+                "beforeend",
+                `<tr>
+               <td><input type="checkbox" value="${p.id}"></td>
+               <td>${p.id}</td><td>${p.code}</td>
+             </tr>`
+              );
+            }
+          });
+          modalReturn.classList.add("show");
+        };
+      }
+      // attach to existing
+      document
+        .querySelectorAll(".item-section .return-btn")
+        .forEach(attachReturnHandler);
+
+      document.querySelector("[data-close-return]").onclick = () =>
+        modalReturn.classList.remove("show");
+
+      document.querySelector(".devolver-tudo-btn").onclick = () =>
+        Array.from(returnList.querySelectorAll("input")).forEach(
+          (chk) => (chk.checked = true)
+        );
+
+      document.querySelector(".confirm-btn").onclick = () => {
+        const sel = Array.from(
+          returnList.querySelectorAll("input:checked")
+        ).map((chk) => chk.value);
+        if (!sel.length) return alert("Selecione um ou mais.");
+        const date = prompt("Data da devolução (YYYY-MM-DD):");
+        if (!date) return;
+        sel.forEach((id) => {
+          Object.values(patrimonies)
+            .flat()
+            .find((p) => p.id == id).ret = true;
+        });
+        modalReturn.classList.remove("show");
+        alert(`Devolução em ${date} registrada.`);
+      };
+    </script>
+  </body>
+</html>

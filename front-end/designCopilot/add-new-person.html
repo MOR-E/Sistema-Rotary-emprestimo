@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Adicionar Pessoa – Empréstimo de Itens</title>
+    <style>
+      :root {
+        --yellow: #fcbb17;
+        --navy: #233067;
+        --white: #ffffff;
+        --gray: #f4f4f4;
+      }
+      /* Reset e base */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: sans-serif;
+        background: var(--gray);
+      }
+
+      /* Cabeçalho */
+      header {
+        background: var(--navy);
+        color: var(--white);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      header h1 {
+        font-size: 1.25rem;
+        color: var(--yellow);
+      }
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--white);
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .back-btn:hover {
+        color: var(--yellow);
+      }
+
+      /* Container do formulário */
+      .form-container {
+        max-width: 480px;
+        margin: 2rem auto;
+        background: var(--white);
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .form-container h2 {
+        margin-bottom: 1.5rem;
+        color: var(--navy);
+        text-align: center;
+        font-size: 1.5rem;
+      }
+
+      /* Agrupamento de inputs com ícone */
+      .input-group {
+        position: relative;
+        margin-bottom: 1rem;
+      }
+      .input-group svg {
+        position: absolute;
+        top: 50%;
+        left: 0.75rem;
+        width: 20px;
+        height: 20px;
+        transform: translateY(-50%);
+        stroke: #888;
+        stroke-width: 2;
+        fill: none;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .input-group input:focus {
+        border-color: var(--yellow);
+        box-shadow: 0 0 0 3px rgba(252, 187, 23, 0.2);
+        outline: none;
+      }
+
+      /* Botão Salvar */
+      .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--yellow);
+        color: var(--navy);
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .submit-btn:hover {
+        background: #e6ae14;
+      }
+      .submit-btn:active {
+        transform: scale(0.98);
+      }
+
+      /* Responsividade */
+      @media (max-width: 480px) {
+        .form-container {
+          margin: 1rem;
+          padding: 1.5rem;
+        }
+        header h1 {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="back-btn" onclick="history.back()" aria-label="Voltar">
+        ← Voltar
+      </button>
+      <h1>Nova Pessoa</h1>
+      <div style="width: 1rem"></div>
+    </header>
+
+    <div class="form-container">
+      <h2>Adicionar Pessoa</h2>
+      <form action="pessoas.html" method="get">
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4
+                   8 5.79 8 8s1.79 4 4 4zM6 20v-1c0-2.21
+                   1.79-4 4-4h4c2.21 0 4 1.79 4 4v1"
+            />
+          </svg>
+          <input type="text" name="nome" placeholder="Nome completo" required />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M2 2h20v20H2V2zm2 3h16v2H4V5zm0
+                   4h16v2H4V9zm0 4h10v2H4v-2z"
+            />
+          </svg>
+          <input
+            type="tel"
+            name="telefone1"
+            placeholder="Telefone 1"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M2 2h20v20H2V2zm2 3h16v2H4V5zm0
+                   4h16v2H4V9zm0 4h10v2H4v-2z"
+            />
+          </svg>
+          <input type="tel" name="telefone2" placeholder="Telefone 2" />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+          </svg>
+          <input type="text" name="cep" placeholder="CEP" required />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 12l9-9 9 9v9H3v-9z" />
+          </svg>
+          <input type="text" name="rua" placeholder="Rua" required />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 4h16v4H4V4zm0 6h16v4H4v-4zm0
+                   6h16v4H4v-4z"
+            />
+          </svg>
+          <input type="text" name="bairro" placeholder="Bairro" required />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2a10 10 0 00-7.07 17.07
+                   10 10 0 1014.14-14.14A9.96 9.96 0 0012 2z"
+            />
+          </svg>
+          <input type="text" name="cpf" placeholder="CPF" required />
+        </div>
+
+        <div class="input-group">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 4h16v16H4V4zm8 2a4 4 0 110 8
+                   4 4 0 010-8z"
+            />
+          </svg>
+          <input type="text" name="rg" placeholder="RG" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Salvar Pessoa</button>
+      </form>
+    </div>
+  </body>
+</html>
+```

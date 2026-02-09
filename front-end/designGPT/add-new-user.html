@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adicionar Usuário - Empresta+</title>
+    <style>
+      :root {
+        --primary: #233067;
+        --accent: #fcbb17;
+        --light: #ffffff;
+        --bg: #f5f7fa;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --card-bg: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        background: var(--primary);
+        color: var(--light);
+        padding: 0 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px var(--shadow);
+      }
+      header .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      nav a {
+        color: var(--light);
+        margin: 0 10px;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+      }
+      .form-container {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px var(--shadow);
+        width: 100%;
+        max-width: 500px;
+      }
+      .form-container h1 {
+        color: var(--primary);
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        color: var(--primary);
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid var(--primary);
+        border-radius: 6px;
+        font-size: 1rem;
+      }
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .btn-secondary,
+      .btn-primary {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .btn-secondary {
+        background: var(--light);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+      }
+      .btn-secondary:hover {
+        background: #eaeaea;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: var(--primary);
+      }
+      .btn-primary:hover {
+        background: #e0a511;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Empresta+</div>
+      <nav>
+        <a href="homepage.html">Home</a>
+        <a href="users.html">Usuários</a>
+      </nav>
+    </header>
+    <main>
+      <div class="form-container">
+        <h1>Adicionar Novo Usuário</h1>
+        <form action="users.html" method="get">
+          <div class="form-group">
+            <label for="name">Nome</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Nome completo"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefone</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="(XX) XXXXX-XXXX"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@exemplo.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="********"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="admin">Administrador?</label>
+            <select id="admin" name="admin">
+              <option value="no">Não</option>
+              <option value="yes">Sim</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="location.href='users.html'"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

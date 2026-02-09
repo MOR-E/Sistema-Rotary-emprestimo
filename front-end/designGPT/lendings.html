@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Empréstimos - Empresta+</title>
+    <style>
+      :root {
+        --primary: #233067;
+        --accent: #fcbb17;
+        --light: #ffffff;
+        --bg: #f5f7fa;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+      }
+      header {
+        background: var(--primary);
+        color: var(--light);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      nav a {
+        color: var(--light);
+        margin: 0 0.5rem;
+        text-decoration: none;
+      }
+      nav a.active {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px var(--shadow);
+      }
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      .controls h2 {
+        color: var(--primary);
+        font-size: 1.25rem;
+      }
+      .filter-group {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .filter-group select,
+      .filter-group input {
+        padding: 0.5rem;
+        border: 1px solid var(--accent);
+        border-radius: 4px;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .btn-add-loan {
+        background: var(--accent);
+        color: var(--primary);
+      }
+      .btn-confirm {
+        background: var(--accent);
+        color: var(--primary);
+      }
+      .btn-icon {
+        background: none;
+        border: none;
+        padding: 0.3rem;
+        cursor: pointer;
+      }
+      .btn-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--accent);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+      }
+      th,
+      td {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background: var(--accent);
+        color: var(--primary);
+      }
+      /* Modals */
+      .modal-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .modal {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        max-width: 600px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 4px 15px var(--shadow);
+      }
+      h3 {
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: var(--accent);
+      }
+      .item-table,
+      .pat-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+      }
+      .item-table th,
+      .pat-table th,
+      .item-table td,
+      .pat-table td {
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+      .item-table th,
+      .pat-table th {
+        background: #f0f0f0;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Empresta+</div>
+      <nav><a href="#">Home</a><a href="#" class="active">Empréstimos</a></nav>
+    </header>
+
+    <div class="container">
+      <div class="controls">
+        <h2>Empréstimos</h2>
+        <div class="filter-group">
+          <select id="filterType" onchange="filterLoans()">
+            <option value="id">ID</option>
+            <option value="date">Data</option>
+            <option value="status">Status</option>
+          </select>
+          <input
+            type="text"
+            id="filterInput"
+            placeholder="Buscar..."
+            oninput="filterLoans()"
+          />
+        </div>
+        <button class="btn btn-add-loan" onclick="openNewLoan()">
+          + Novo Empréstimo
+        </button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Emprest.</th>
+            <th>Dev.</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="loanBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Modal Novo Empréstimo -->
+    <div class="modal-bg" id="modalNew">
+      <div class="modal">
+        <span class="close" onclick="closeNewLoan()">×</span>
+        <h3>Novo Empréstimo</h3>
+        <div class="form-group">
+          <label>Pessoa</label
+          ><input type="text" id="loanPerson" placeholder="Buscar pessoa..." />
+        </div>
+        <div class="form-group">
+          <label>Data Empréstimo</label><input type="date" id="loanDate" />
+        </div>
+        <button class="btn-confirm" onclick="openModalItem()">
+          Adicionar Item
+        </button>
+        <table class="item-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Patrimônios</th>
+            </tr>
+          </thead>
+          <tbody id="loanItems"></tbody>
+        </table>
+        <button class="btn-confirm" onclick="confirmLoan()">
+          Confirmar Empréstimo
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Selecionar Item -->
+    <div class="modal-bg" id="modalItem">
+      <div class="modal">
+        <span class="close" onclick="closeModalItem()">×</span>
+        <h3>Selecionar Item</h3>
+        <table class="item-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Total</th>
+              <th>Disp.</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Cadeira</td>
+              <td>10</td>
+              <td>7</td>
+              <td>
+                <button class="btn-confirm" onclick="selectItem(1)">
+                  Selecionar
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Muleta</td>
+              <td>5</td>
+              <td>5</td>
+              <td>
+                <button class="btn-confirm" onclick="selectItem(2)">
+                  Selecionar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Selecionar Patrimônio -->
+    <div class="modal-bg" id="modalPat">
+      <div class="modal">
+        <span class="close" onclick="closeModalPat()">×</span>
+        <h3>Patrimônios do Item</h3>
+        <table class="pat-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="patBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Detalhes Empréstimo -->
+    <div class="modal-bg" id="modalDetails">
+      <div class="modal">
+        <span class="close" onclick="closeDetails()">×</span>
+        <h3>Detalhes Empréstimo</h3>
+        <table class="item-table">
+          <thead>
+            <tr>
+              <th>Pessoa</th>
+              <th>Requisitante</th>
+            </tr>
+          </thead>
+          <tbody id="detailsInfo"></tbody>
+        </table>
+        <table class="item-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Patrimônios</th>
+            </tr>
+          </thead>
+          <tbody id="detailsItems"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Registrar Devolução -->
+    <div class="modal-bg" id="modalReturn">
+      <div class="modal">
+        <span class="close" onclick="closeModalReturn()">×</span>
+        <h3>Registrar Devolução</h3>
+        <button class="btn-confirm" onclick="returnAll()">Devolver Tudo</button>
+        <table class="pat-table">
+          <thead>
+            <tr>
+              <th>Sel.</th>
+              <th>ID</th>
+              <th>Cód.</th>
+            </tr>
+          </thead>
+          <tbody id="returnBody"></tbody>
+        </table>
+        <label>Data:</label><input type="date" id="returnDate" />
+        <button class="btn-confirm" onclick="submitReturn()">Confirmar</button>
+      </div>
+    </div>
+
+    <script>
+      let newLoanItems = [],
+        loanIdCounter = 1;
+      function openNewLoan() {
+        modalNew.style.display = "flex";
+      }
+      function closeNewLoan() {
+        modalNew.style.display = "none";
+        newLoanItems = [];
+        loanItems.innerHTML = "";
+      }
+      function confirmLoan() {
+        const p = loanPerson.value,
+          d = loanDate.value;
+        if (!p || !d || !newLoanItems.length) return alert("Preencha todos");
+        const tb = loanBody;
+        const id = loanIdCounter++,
+          dev = "Pendente",
+          st = "Aberto";
+        const btns = [
+          [
+            "Detalhes",
+            "openLoanDetails",
+            `<path d='M12 2a10 10 0 1 0 10 10...'/>`,
+          ],
+          ["Adicionar", "openModalItem", `<path d='M13 11h8v2h-8v8h-2v-...'/>`],
+          [
+            "Devolução",
+            "openModalReturn",
+            `<path d='M20 12l-4-4v3H4v2h12v3l4-4z'/>`,
+          ],
+          ["Editar", "", `<path d='M3 17.25V21h3.75L17.81...'/>`],
+          ["Inativar", "", `<path d='M12 4V1L8 5l4 4V6...'/>`],
+        ]
+          .map(
+            ([t, f, svg]) =>
+              `<button class='btn-icon' title='${t}' onclick='${f}(${id})'><svg viewBox='0 0 24 24'>${svg}</svg></button>`
+          )
+          .join("");
+        tb.innerHTML += `<tr class='loan-row'><td>${id}</td><td>${d}</td><td>${dev}</td><td>${st}</td><td>${btns}</td></tr>`;
+        closeNewLoan();
+      }
+      function openModalItem() {
+        modalItem.style.display = "flex";
+      }
+      function closeModalItem() {
+        modalItem.style.display = "none";
+      }
+      function selectItem(id) {
+        closeModalItem();
+        populatePat(id);
+      }
+      function populatePat(id) {
+        const data = {
+          1: [
+            { id: 101, code: "PATR-1001" },
+            { id: 103, code: "PATR-1003" },
+          ],
+          2: [
+            { id: 201, code: "PATR-2001" },
+            { id: 202, code: "PATR-2002" },
+          ],
+        };
+        patBody.innerHTML = "";
+        data[id].forEach(
+          (p) =>
+            (patBody.innerHTML += `<tr><td>${p.id}</td><td>${p.code}</td><td><button class='btn-confirm' onclick='addPat(${id},${p.id})'>Adicionar</button></td></tr>`)
+        );
+        modalPat.style.display = "flex";
+      }
+      function closeModalPat() {
+        modalPat.style.display = "none";
+      }
+      function addPat(item, pat) {
+        newLoanItems.push({ item, pat });
+        loanItems.innerHTML = "";
+        newLoanItems.forEach(
+          (i) =>
+            (loanItems.innerHTML += `<tr><td>Item ${i.item}</td><td>Pat ${i.pat}</td></tr>`)
+        );
+        closeModalPat();
+      }
+      function openModalReturn(id) {
+        modalReturn.style.display = "flex";
+        returnBody.innerHTML = "";
+        newLoanItems.forEach(
+          (i) =>
+            (returnBody.innerHTML += `<tr><td><input type='checkbox' value='${i.pat}'/></td><td>${i.pat}</td><td>PATR-${i.pat}</td></tr>`)
+        );
+      }
+      function returnAll() {
+        document
+          .querySelectorAll("#returnBody input")
+          .forEach((cb) => (cb.checked = true));
+      }
+      function closeModalReturn() {
+        modalReturn.style.display = "none";
+      }
+      function submitReturn() {
+        const d = returnDate.value;
+        alert("Devolução em " + d);
+        closeModalReturn();
+      }
+      function openLoanDetails(id) {
+        detailsInfo.innerHTML = `<tr><td>${loanPerson.value || "---"}</td><td>${
+          loanPerson.value || "---"
+        }</td></tr>`;
+        detailsItems.innerHTML = newLoanItems
+          .map((i) => `<tr><td>Item ${i.item}</td><td>PATR-${i.pat}</td></tr>`)
+          .join("");
+        modalDetails.style.display = "flex";
+      }
+      function closeDetails() {
+        modalDetails.style.display = "none";
+      }
+      function filterLoans() {
+        const t = filterType.value,
+          q = filterInput.value.toLowerCase();
+        document.querySelectorAll(".loan-row").forEach((r) => {
+          let x = "";
+          if (t === "id") x = r.cells[0].textContent;
+          else if (t === "date") x = r.cells[1].textContent;
+          else x = r.cells[3].textContent;
+          r.style.display = x.includes(q) ? "" : "";
+        });
+      }
+    </script>
+  </body>
+</html>

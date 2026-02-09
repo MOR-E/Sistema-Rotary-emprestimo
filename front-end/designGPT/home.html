@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - Sistema de Empréstimo</title>
+    <style>
+      :root {
+        --primary: #233067;
+        --accent: #fcbb17;
+        --light: #ffffff;
+        --bg: #f5f7fa;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background-color: var(--bg);
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Cabeçalho */
+      header {
+        background: linear-gradient(90deg, var(--primary), #1a2755);
+        color: var(--light);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        height: 70px;
+        box-shadow: 0 2px 5px var(--shadow);
+        position: relative;
+      }
+      .left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 24px;
+        cursor: pointer;
+      }
+      .hamburger div {
+        width: 100%;
+        height: 3px;
+        background: var(--light);
+        border-radius: 2px;
+        transition: background 0.3s;
+      }
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      nav {
+        display: flex;
+        gap: 20px;
+        transition: transform 0.4s ease;
+      }
+      nav a {
+        color: var(--light);
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+        padding: 5px;
+        transition: color 0.3s, background 0.3s;
+        border-radius: 4px;
+      }
+      nav a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.3s;
+      }
+      nav a:hover::after,
+      nav a.active::after {
+        width: 100%;
+      }
+      nav a.active {
+        background: var(--accent);
+        color: var(--primary);
+      }
+
+      .user-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px var(--shadow);
+        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      }
+      .user-icon.active {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px var(--shadow);
+        background: var(--light);
+      }
+      .user-icon svg {
+        width: 22px;
+        height: 22px;
+        fill: var(--primary);
+        transition: fill 0.3s;
+      }
+      .user-icon.active svg {
+        fill: var(--primary);
+      }
+
+      /* Conteúdo */
+      main {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        padding: 40px;
+      }
+      .modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        width: 100%;
+        max-width: 1000px;
+      }
+      .module-card {
+        background: var(--light);
+        color: var(--primary);
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        padding: 25px 15px;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 10px var(--shadow);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.3s,
+          background 0.3s, color 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px var(--shadow);
+      }
+      .module-card.active {
+        background: var(--accent);
+        color: var(--light);
+        border-color: var(--primary);
+      }
+      .module-card svg {
+        width: 35px;
+        height: 35px;
+        margin-bottom: 8px;
+        fill: var(--accent);
+        transition: fill 0.3s;
+      }
+      .module-card.active svg {
+        fill: var(--light);
+      }
+
+      /* Rodapé */
+      footer {
+        background-color: var(--primary);
+        color: var(--light);
+        text-align: center;
+        padding: 15px 0;
+        font-size: 0.9rem;
+        box-shadow: 0 -2px 5px var(--shadow);
+      }
+
+      /* Responsividade */
+      @media (max-width: 768px) {
+        .hamburger {
+          display: flex;
+        }
+        nav {
+          position: absolute;
+          top: 70px;
+          left: 0;
+          width: 200px;
+          flex-direction: column;
+          background: var(--primary);
+          transform: translateX(-220px);
+        }
+        nav.open {
+          transform: translateX(0);
+        }
+        nav a {
+          padding: 15px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        header .left {
+          align-items: center;
+          gap: 10px;
+        }
+        main {
+          padding: 20px;
+        }
+        .modules {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 15px;
+        }
+        .module-card {
+          padding: 20px 10px;
+          font-size: 0.95rem;
+        }
+        .module-card svg {
+          width: 30px;
+          height: 30px;
+        }
+      }
+      @media (max-width: 480px) {
+        .logo {
+          font-size: 1.4rem;
+        }
+        .user-icon {
+          width: 36px;
+          height: 36px;
+        }
+        .user-icon svg {
+          width: 18px;
+          height: 18px;
+        }
+        nav a {
+          font-size: 0.9rem;
+        }
+        .modules {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .module-card {
+          padding: 15px 8px;
+          font-size: 0.9rem;
+        }
+        .module-card svg {
+          width: 28px;
+          height: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left">
+        <div class="hamburger" onclick="toggleMenu()">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="logo">Empresta+</div>
+      </div>
+      <nav id="navMenu">
+        <a href="#usuarios" onclick="setActive(this)">Usuários</a>
+        <a href="#pessoas" onclick="setActive(this)">Pessoas</a>
+        <a href="#itens" onclick="setActive(this)">Itens</a>
+        <a href="#emprestimos" onclick="setActive(this)">Empréstimos</a>
+        <a href="#relatorios" onclick="setActive(this)">Relatórios</a>
+      </nav>
+      <div
+        class="user-icon"
+        title="Editar perfil"
+        onclick="this.classList.toggle('active')"
+      >
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+          />
+        </svg>
+      </div>
+    </header>
+    <main>
+      <div class="modules">
+        <div class="module-card" id="usuarios" onclick="activateCard(this)">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+            />
+          </svg>
+          Usuários
+        </div>
+        <div class="module-card" id="pessoas" onclick="activateCard(this)">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M6 21v-2c0-2.8 4.4-4.2 6-4.2s6 1.4 6 4.2v2H6z M12 2.4c-2.7 0-4.8 2.1-4.8 4.8s2.1 4.8 4.8 4.8 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4z"
+            />
+          </svg>
+          Pessoas
+        </div>
+        <div class="module-card" id="itens" onclick="activateCard(this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+          </svg>
+          Itens
+        </div>
+        <div class="module-card" id="emprestimos" onclick="activateCard(this)">
+          <svg viewBox="0 0 24 24"><path d="M8 17l4-4 4 4V5h-8v12z" /></svg>
+          Empréstimos
+        </div>
+        <div class="module-card" id="relatorios" onclick="activateCard(this)">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M3 13h2v-2H3v2zm0 8h2v-2H3v2zM3 5v2h2V5H3zm4 8h14v-2H7v2zm0 8h14v-2H7v2zm0-12v2h14V5H7z"
+            />
+          </svg>
+          Relatórios
+        </div>
+      </div>
+    </main>
+    <footer>&copy; 2025 Empresta+. Todos os direitos reservados.</footer>
+    <script>
+      function toggleMenu() {
+        document.getElementById("navMenu").classList.toggle("open");
+      }
+      function setActive(element) {
+        document
+          .querySelectorAll("nav a")
+          .forEach((a) => a.classList.remove("active"));
+        element.classList.add("active");
+      }
+      function activateCard(card) {
+        document
+          .querySelectorAll(".module-card")
+          .forEach((c) => c.classList.remove("active"));
+        card.classList.add("active");
+      }
+    </script>
+  </body>
+</html>

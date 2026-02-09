@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Itens – Empréstimo de Itens</title>
+  <style>
+    :root {
+      --yellow: #FCBB17;
+      --navy:   #233067;
+      --white:  #FFFFFF;
+      --gray:   #F9F9F9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body {
+      height: 100%;
+      font-family: sans-serif;
+      background: var(--white);
+      color: var(--navy);
+    }
+    body { display: flex; flex-direction: column }
+
+    header {
+      background: var(--navy);
+      color: var(--white);
+      padding: .75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 1.25rem; color: var(--yellow) }
+    .btn-add {
+      background: var(--yellow);
+      color: var(--navy);
+      border: none;
+      padding: .5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-add:hover { background: #e6ae14 }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+      background: #fefefe;
+      border: 2px solid var(--yellow);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .filter-container select,
+    .filter-container input {
+      padding: .6rem .75rem;
+      border: 2px solid var(--navy);
+      border-radius: 6px;
+      font-size: 1rem;
+      flex: 1;
+    }
+    .filter-container select { max-width: 180px }
+    .filter-container input { min-width: 200px }
+    .filter-container select:focus,
+    .filter-container input:focus {
+      outline: none;
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(252,187,23,0.2);
+    }
+
+    .table-wrapper { overflow-x: auto }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 750px;
+    }
+    th, td {
+      padding: .75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: var(--navy);
+      color: var(--white);
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) { background: var(--gray) }
+
+    .expand-btn {
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-size: 1.2rem;
+      width: 28px; height: 28px;
+      cursor: pointer;
+    }
+    .expand-btn:hover { color: var(--yellow) }
+
+    .action-btn {
+      width: 32px; height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: .5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .edit-btn { background: var(--yellow); color: var(--navy) }
+    .edit-btn:hover { background: var(--navy); color: var(--yellow) }
+    .toggle-btn.active { background: var(--yellow); color: var(--navy) }
+    .toggle-btn.active:hover { background: #e6ae14 }
+    .toggle-btn.inactive { background: var(--navy); color: var(--white) }
+    .toggle-btn.inactive:hover { background: #1a2450 }
+    .patrimonio-btn { background: #4CAF50; color: var(--white) }
+    .patrimonio-btn:hover { background: #45A049 }
+    .action-btn svg {
+      width: 18px; height: 18px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .subtable { display: none; background: #f4f4f4 }
+    .subtable.show { display: table-row }
+    .subtable td { padding: 0; border: none }
+    .subtable table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .subtable th, .subtable td {
+      padding: .5rem;
+      font-size: .9rem;
+      border: 1px solid #ccc;
+    }
+    .subtable th { background: #ddd }
+
+    footer {
+      background: var(--navy);
+      color: var(--white);
+      text-align: center;
+      padding: .75rem;
+      font-size: .8rem;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 1rem; }
+      .btn-add { padding: .4rem .8rem; font-size: .9rem; }
+      th, td { padding: .5rem .75rem; }
+    }
+    @media (max-width: 576px) {
+      table { min-width: unset }
+      th:nth-child(2), td:nth-child(2) { display: none }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Itens</h1>
+  <button class="btn-add">+ Adicionar Item</button>
+</header>
+
+<main>
+  <div class="filter-container">
+    <select id="filtroTipo">
+      <option value="id">ID</option>
+      <option value="nome">Nome</option>
+      <option value="patrimonio">Patrimônio</option>
+    </select>
+    <input type="text" id="filtroTexto" placeholder="Buscar item..." />
+  </div>
+
+    <main>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Total</th>
+              <th>Disponível</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Item 1 -->
+            <tr>
+              <td>
+                <button class="expand-btn" aria-label="Expandir patrimônio">
+                  +
+                </button>
+              </td>
+              <td>1</td>
+              <td>Cadeira de Rodas</td>
+              <td>Cadeira dobrável leve</td>
+              <td>10</td>
+              <td>7</td>
+              <td>Ativo</td>
+              <td>
+                <!-- Botões de ação com ícones corrigidos -->
+                <button class="action-btn edit-btn" aria-label="Editar">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4 20h16M14.5 4.5l5 5L9 20l-5-5L14.5 4.5z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn toggle-btn active"
+                  aria-label="Inativar"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="4"
+                      y1="4"
+                      x2="20"
+                      y2="20"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn toggle-btn inactive"
+                  aria-label="Ativar"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M5 13l4 4L19 7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn patrimonio-btn"
+                  aria-label="Adicionar patrimônio"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <line
+                      x1="12"
+                      y1="5"
+                      x2="12"
+                      y2="19"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                    <line
+                      x1="5"
+                      y1="12"
+                      x2="19"
+                      y2="12"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            <tr class="subtable">
+              <td colspan="8">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Código</th>
+                      <th>Emprestado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>101</td>
+                      <td>PATR-1001</td>
+                      <td>Não</td>
+                    </tr>
+                    <tr>
+                      <td>102</td>
+                      <td>PATR-1002</td>
+                      <td>Sim</td>
+                    </tr>
+                    <tr>
+                      <td>103</td>
+                      <td>PATR-1003</td>
+                      <td>Não</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Item 2 -->
+            <tr>
+              <td>
+                <button class="expand-btn" aria-label="Expandir patrimônio">
+                  +
+                </button>
+              </td>
+              <td>2</td>
+              <td>Andador</td>
+              <td>Andador ajustável em alumínio</td>
+              <td>5</td>
+              <td>0</td>
+              <td>Inativo</td>
+              <td>
+                <!-- Botões de ação com ícones corrigidos -->
+                <button class="action-btn edit-btn" aria-label="Editar">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4 20h16M14.5 4.5l5 5L9 20l-5-5L14.5 4.5z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn toggle-btn active"
+                  aria-label="Inativar"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="4"
+                      y1="4"
+                      x2="20"
+                      y2="20"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn toggle-btn inactive"
+                  aria-label="Ativar"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M5 13l4 4L19 7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="action-btn patrimonio-btn"
+                  aria-label="Adicionar patrimônio"
+                >
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <line
+                      x1="12"
+                      y1="5"
+                      x2="12"
+                      y2="19"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                    <line
+                      x1="5"
+                      y1="12"
+                      x2="19"
+                      y2="12"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            <tr class="subtable">
+              <td colspan="8">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Código</th>
+                      <th>Emprestado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>201</td>
+                      <td>PATR-2001</td>
+                      <td>Não</td>
+                    </tr>
+                    <tr>
+                      <td>202</td>
+                      <td>PATR-2002</td>
+                      <td>Não</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <!-- mais itens... -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2025 Sua Empresa</p>
+    </footer>
+
+    <script>
+      document.querySelectorAll(".expand-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const row = btn.closest("tr");
+          const next = row.nextElementSibling;
+          const expanded = next.classList.toggle("show");
+          btn.textContent = expanded ? "−" : "+";
+        });
+      });
+    </script>
+  </body>
+</html>

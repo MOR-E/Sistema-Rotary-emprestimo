@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Login – Empréstimo de Itens</title>
+    <style>
+      :root {
+        --yellow: #fcbb17;
+        --navy: #233067;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: sans-serif;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--navy) 0%, #1f2a57 100%);
+        color: var(--navy);
+      }
+
+      .login-container {
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        max-width: 360px;
+        width: 90%;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .login-container h1 {
+        color: var(--navy);
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .input-group {
+        position: relative;
+        margin-bottom: 1.25rem;
+      }
+
+      .input-group svg {
+        position: absolute;
+        top: 50%;
+        left: 0.75rem;
+        width: 20px;
+        height: 20px;
+        transform: translateY(-50%);
+        stroke: #888;
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .input-group input:focus {
+        border-color: var(--yellow);
+        box-shadow: 0 0 0 3px rgba(252, 187, 23, 0.2);
+        outline: none;
+      }
+
+      .login-container button {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--yellow);
+        color: var(--navy);
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: background 0.2s, transform 0.1s;
+      }
+
+      .login-container button:hover {
+        background: #e6ae14;
+      }
+
+      .login-container button:active {
+        transform: scale(0.98);
+      }
+
+      .login-container .forgot {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+        color: #555;
+      }
+
+      .login-container .forgot:hover {
+        color: var(--navy);
+        text-decoration: underline;
+      }
+
+      @media (min-width: 600px) {
+        body {
+          background: var(--navy);
+        }
+        .login-container {
+          padding: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>Empréstimo de Itens</h1>
+      <form action="home.html" method="get">
+        <div class="input-group">
+          <!-- ícone de e-mail -->
+          <svg viewBox="0 0 24 24">
+            <path d="M3 8l9 6 9-6M21 6H3v12h18V6z" />
+          </svg>
+          <input type="email" name="email" placeholder="E-mail" required />
+        </div>
+
+        <div class="input-group">
+          <!-- ícone de senha -->
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="11" width="18" height="10" rx="2" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg>
+          <input type="password" name="senha" placeholder="Senha" required />
+        </div>
+
+        <button type="submit">Entrar</button>
+        <a href="#" class="forgot">Esqueci minha senha</a>
+      </form>
+    </div>
+  </body>
+</html>

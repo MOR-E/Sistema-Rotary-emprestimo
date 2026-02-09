@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil do Usuário - Empresta+</title>
+    <style>
+      :root {
+        --primary: #233067;
+        --accent: #fcbb17;
+        --light: #ffffff;
+        --bg: #f5f7fa;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+      header {
+        width: 100%;
+        background: var(--primary);
+        color: var(--light);
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+      .profile-container {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px var(--shadow);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+      }
+      .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #ccc url("https://via.placeholder.com/120") center/cover;
+        margin: 0 auto 1rem;
+        border: 4px solid var(--accent);
+      }
+      .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .profile-form label {
+        text-align: left;
+        font-weight: bold;
+        color: var(--primary);
+      }
+      .profile-form input {
+        padding: 0.75rem;
+        border: 2px solid var(--accent);
+        border-radius: 6px;
+        outline: none;
+        font-size: 1rem;
+      }
+      .save-btn {
+        background: var(--accent);
+        color: var(--primary);
+        border: none;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .save-btn:hover {
+        background: #e0a916;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Perfil do Usuário</header>
+
+    <div class="profile-container">
+      <div class="profile-photo"></div>
+      <form class="profile-form">
+        <div>
+          <label for="name">Nome</label>
+          <input type="text" id="name" placeholder="Seu nome" />
+        </div>
+        <div>
+          <label for="phone">Telefone</label>
+          <input type="text" id="phone" placeholder="(00) 00000-0000" />
+        </div>
+        <div>
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="email@exemplo.com" />
+        </div>
+        <button type="submit" class="save-btn">Salvar Alterações</button>
+      </form>
+    </div>
+  </body>
+</html>
